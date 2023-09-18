@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FCC: 25+5 Clock</title>
+    <string
+      src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"
+    ></string>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>25 + 5 Clock</h1>
+      <div class="incre-decre-container">
+        <div class="break-container">
+          <h2 id="break-label">Break Length</h2>
+          <div class="button-container">
+            <div id="break-decrement"><i class="fa fa-arrow-down"></i></div>
+            <div id="break-length">5</div>
+            <div id="break-increment"><i class="fa fa-arrow-up"></i></div>
+          </div>
+        </div>
+        <div class="session-container">
+          <h2 id="session-label">Session Length</h2>
+          <div class="button-container">
+            <div id="session-decrement"><i class="fa fa-arrow-down"></i></div>
+            <div id="session-length">25</div>
+            <div id="session-increment"><i class="fa fa-arrow-up"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="display-container">
+        <h2 id="timer-label">Session</h2>
+        <div id="time-left">25:00</div>
+      </div>
+      <div class="time-control">
+        <div id="start_stop">
+          <i class="fa fa-play"></i><i class="fa fa-pause"></i>
+        </div>
+        <div id="reset"><i class="fa fa-refresh"></i></div>
+      </div>
+      <script src="stopwatch.js"></script>
+    </div>
+  </body>
+</html>
