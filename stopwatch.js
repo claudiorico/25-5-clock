@@ -4,11 +4,31 @@ class Stopwatch {
   breakLength = 5;
   sessionLength = 25;
   sessionStoped = true;
+  breakActive = false;
+  lastMinute = false;
+  beepActive = false;
 
   start(callback = () => {}) {
     if (this.sessionStoped) {
       this.#intervalId = setInterval(() => {
         this.#elapsedTimeInSeconds--;
+        if (this.#elapsedTimeInSeconds === 0) {
+          if (!this.breakActive) {
+            this.#elapsedTimeInSeconds = this.breakLength * 60;
+            this.breakActive = true;
+          } else {
+            this.#elapsedTimeInSeconds = this.sessionLength * 60;
+            this.breakActive = false;
+          }
+          this.beepActive = true;
+        }
+
+        if (this.#elapsedTimeInSeconds <= 60) {
+          this.lastMinute = true;
+        } else {
+          this.lastMinute = false;
+        }
+
         this.sessionStoped = false;
         callback();
       }, 1000);
@@ -38,16 +58,38 @@ class Stopwatch {
     return this.sessionLength;
   }
 
-  incrementBreak() {
+  get breakLength() {
+    return this.breakLength;
+  }
+
+  get breakActive() {
+    return this.breakActive;
+  }
+
+  get lastMinute() {
+    return this.lastMinute;
+  }
+
+  get beepActive() {
+    return this.beepActive;
+  }
+
+  set beepActive(newValue) {
+    this.beepActive = newValue;
+  }
+
+  incrementBreak(callback = () => {}) {
     if (this.breakLength < 60) {
       this.breakLength++;
     }
+    callback();
   }
 
-  decrementBreak() {
+  decrementBreak(callback = () => {}) {
     if (this.breakLength > 1) {
       this.breakLength--;
     }
+    callback();
   }
 
   incrementSession(callback = () => {}) {
@@ -97,16 +139,35 @@ class Stopwatch {
 }
 
 const startBtn = document.getElementById("start_stop");
-// const stopBtn = document.getElementById("stop");
 const resetBtn = document.getElementById("reset");
 const stopwatchDisplay = document.getElementById("time-left");
 const sessionDe = document.getElementById("session-decrement");
 const sessionLength = document.getElementById("session-length");
 const sessionIn = document.getElementById("session-increment");
+const breakDe = document.getElementById("break-decrement");
+const breakLength = document.getElementById("break-length");
+const breakIn = document.getElementById("break-increment");
+const timerLabel = document.getElementById("timer-label");
+const displayContainer =
+  document.getElementsByClassName("display-container")[0];
+const audio = document.getElementById("beep");
 
 function updateDisplay() {
   stopwatchDisplay.innerText = sw1.elapsedTime;
   sessionLength.innerText = sw1.sessionLength;
+  breakLength.innerText = sw1.breakLength;
+  timerLabel.innerText = sw1.breakActive ? "Break" : "Session";
+
+  if (sw1.lastMinute) {
+    displayContainer.classList.add("red");
+  } else {
+    displayContainer.classList.remove("red");
+  }
+
+  if (sw1.beepActive) {
+    audio.play();
+    sw1.beepActive = false;
+  }
 }
 
 const sw1 = new Stopwatch();
@@ -114,10 +175,11 @@ const sw1 = new Stopwatch();
 startBtn.addEventListener("click", () => {
   sw1.start(updateDisplay);
 });
-// stopBtn.addEventListener("click", () => {
-//   sw1.stop(updateDisplay);
-// });
+
 resetBtn.addEventListener("click", () => {
+  let audio = document.getElementById("beep");
+  audio.pause();
+  audio.currentTime = 0;
   sw1.restart(updateDisplay);
 });
 
@@ -127,4 +189,12 @@ sessionDe.addEventListener("click", () => {
 
 sessionIn.addEventListener("click", () => {
   sw1.incrementSession(updateDisplay);
+});
+
+breakDe.addEventListener("click", () => {
+  sw1.decrementBreak(updateDisplay);
+});
+
+breakIn.addEventListener("click", () => {
+  sw1.incrementBreak(updateDisplay);
 });
